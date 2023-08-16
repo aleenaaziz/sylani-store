@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home-Saylani Online Discount Store</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="first-container">
+      <img
+        src="../img/back.png"
+        alt=""
+        style="height: 20px; padding-top: 10px; padding-right: 5px"
+      />
+      <img src="../img/man.png" alt="" style="height: 40px; margin-left: 5px" />
+      <h5
+        style="
+          color: #024f9d;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 18px;
+          margin-left: 5px;
+        "
+      >
+        Ms. Alina
+      </h5>
+      <h4
+        style="
+          color: #61b846;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 15px;
+          margin-top: 20px;
+          margin-left: -75px;
+        "
+      >
+        Admin
+      </h4>
+      <img
+        src="../img/list.png"
+        alt=""
+        style="height: 40px; float: right; margin-left: 180px"
+      />
+    </div>
+    <div class="second-container">
+      <h4
+        style="
+          color: #024f9d;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 15px;
+          margin-left: 40px;
+          margin-top: 10px;
+        "
+      >
+        Add New Item
+      </h4>
+      <input
+  type="file"
+  class="file"
+  id="image"
+  accept="image/png, image/jpeg"
+/>
+      <span id="filetext"></span>
+      <input
+        type="text"
+        placeholder="Item Name"
+        style="
+          width: 333px;
+          height: 41px;
+          border-radius: 15px;
+          background: #d9d9d9;
+          border: none;
+          margin-left: 15px;
+          margin-top: 5px;
+          padding-left: 10px;
+        "
+        id="item-name"
+      />
+      <select id="dropdown">
+        <option selected style="color: gray">Select Category</option>
+        <option value="1" style="color: gray">Fruit</option>
+        <option value="1" style="color: gray">Vegetable</option>
+        <option value="1" style="color: gray">Meat</option>
+      </select>
+      <input
+        type="text"
+        class="message"
+        placeholder="Describe this Item"
+        id="description"
+      />
+      <div class="unit">
+        <p class="unit-p">Unit Name:</p>
+        <input
+          type="number"
+          placeholder="Pcs / Kg / dozen"
+          class="unit-i"
+          id="unit-name"
+        />
+      </div>
+      <div class="unit">
+        <p class="unit-p">Unit Price:</p>
+        <input
+          type="number"
+          placeholder="$3.22"
+          class="unit-i"
+          style="margin-left: 60px"
+          id="price"
+        />
+      </div>
+      <button class="btn first-button">
+        <p class="button-para">Add Product</p>
+      </button>
+    </div>
+
+    <footer>
+      <img src="../img/home.png" alt="" style="width: 30px; height: 30px" />
+      <p
+        style="
+          margin-left: -120px;
+          margin-top: 30px;
+          font-size: 10px;
+          color: gray;
+        "
+      >
+        Home
+      </p>
+      <a href="../items/index.html"
+        ><img
+          src="../img/add items.png"
+          alt=""
+          style="width: 25px; height: 25px"
+      /></a>
+      <a href="../account/index.html">
+        <img
+          src="../img/account.png"
+          alt=""
+          style="width: 30px; height: 30px; margin-top: -2px"
+        />
+      </a>
+      <p></p>
+    </footer>
+    <p
+      style="
+        margin-left: 155px;
+        margin-top: 30px;
+        font-size: 10px;
+        color: #61b846;
+      "
+    >
+      Add Items
+    </p>
+    <p
+      style="
+        margin-left: 280px;
+        margin-top: -10px;
+        font-size: 10px;
+        color: gray;
+      "
+    >
+      Account
+    </p>
+
+    <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-storage.js"></script>
+    <script>
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID",
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const storage = getStorage(app);
+      const auth = getAuth(app);
+    
+      // Function to handle image upload
+      function uploadImage(e) {
+        const user = auth.currentUser;
+    
+        if (user) {
+          const uid = user.uid;
+          const fileref = ref(storage, `/user/${uid}/profile`);
+          const uploadTask = put(fileref, e.target.files[0]);
+    
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Upload is " + progress + "% done");
+              if (progress === 100) {
+                alert("Uploaded Successfully");
+              }
+            },
+            (error) => {
+              console.log(error);
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                console.log("File available at", downloadURL);
+              });
+            }
+          );
+        } else {
+          console.log("User not authenticated.");
+          // Handle authentication error or show a message to the user
+        }
+      }
+    
+      // Attach the event listener
+      document.getElementById("image").addEventListener("change", uploadImage);
+      
+  // let name = document.getElementById("item-name").value;
+  // let Category = document.getElementById("dropdown").value;
+  // let description = document.getElementById("description").value;
+  // let unit = document.getElementById("unit-name").value;
+  // let price = document.getElementById("price").value;
+  // let image = document.getElementById("image").value;
+    </script>
+
+
+
+   
+    
+  </body>
+</html>

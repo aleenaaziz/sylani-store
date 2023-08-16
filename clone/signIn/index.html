@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SignIn-Saylani Online Discount Store</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="first" style="padding-top: 70px">SAYLANI WELFARE</h2>
+      <h4 class="second">ONLINE DISCOUNT STORE</h4>
+      <input type="text" class="inp" placeholder="Email" id="email" /><img
+        src="../img/Email icon.png"
+        alt=""
+        style="
+          margin-left: -25px;
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+          opacity: 0.9;
+          margin-top: 80px;
+        "
+      />
+      <input
+        type="password"
+        class="inp"
+        placeholder="password"
+        id="password"
+      /><img
+        src="../img/Password icon.png"
+        alt=""
+        style="
+          margin-left: -25px;
+          width: 25px;
+          height: 20px;
+          flex-shrink: 0;
+          opacity: 0.9;
+        "
+      />
+      <a href="#" style="display: block" class="bottom">Forget Password?</a>
+      <button class="btn" id="signIn" style="display: block">
+        <p class="button-para">Sign In</p>
+      </button>
+      <a
+        href="../signUp/index.html"
+        style="display: block; margin-top: 20px"
+        class="bottom"
+        >Dont have an account? Register</a
+      >
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+      import {
+        getDatabase,
+        set,
+        ref,
+        update,
+      } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+      import {
+        getAuth,
+        signInWithEmailAndPassword,
+        onAuthStateChanged
+      } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA6MM48ydT8AA9rBFXOIe3ZKLlNR2Qfyqg",
+        authDomain: "new-project-b9bc7.firebaseapp.com",
+        projectId: "new-project-b9bc7",
+        storageBucket: "new-project-b9bc7.appspot.com",
+        messagingSenderId: "812785728456",
+        appId: "1:812785728456:web:48d597eeaec16326fc5efd",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const auth = getAuth();
+
+      signIn.addEventListener("click", (e) => {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+
+            const dt = new Date();
+            update(ref(database, "users/" + user.uid), {
+              last_login: dt,
+            });
+            window.location.href="../user interface/home/index.html";
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorMessage);
+          });
+      });
+
+      const user = auth.currentUser;
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in, see docs for a list of available properties
+          // https://firebase.google.com/docs/reference/js/auth.user
+          const uid = user.uid;
+          // ...
+        } else {
+          // User is signed out
+          // ...
+        }
+      });
+    </script>
+  </body>
+</html>

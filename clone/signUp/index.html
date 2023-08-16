@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SignUp-Saylani Online Discount Store</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="first" style="padding-top: 70px">SAYLANI WELFARE</h2>
+      <h4 class="second">ONLINE DISCOUNT STORE</h4>
+      <input
+        type="text"
+        class="inp"
+        placeholder="Full Name"
+        style="margin-top: 80px"
+        id="user"
+      /><img
+        src="../img/User name icon.png"
+        alt=""
+        style="
+          margin-left: -25px;
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+          opacity: 0.7;
+        "
+      />
+      <input type="text" class="inp" placeholder="Contact" id="contact" /><img
+        src="../img/Frame.png"
+        alt=""
+        style="
+          margin-left: -25px;
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+          opacity: 0.9;
+        "
+      />
+      <input type="text" class="inp" placeholder="Email" id="email" /><img
+        src="../img/Email icon.png"
+        alt=""
+        style="
+          margin-left: -25px;
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+          opacity: 0.9;
+        "
+      />
+      <input
+        type="password"
+        class="inp"
+        placeholder="password"
+        id="password"
+      /><img
+        src="../img/Password icon.png"
+        alt=""
+        style="
+          margin-left: -25px;
+          width: 25px;
+          height: 20px;
+          flex-shrink: 0;
+          opacity: 0.9;
+        "
+      />
+      <button class="btn" id="signup" style="display: block">
+        <p class="button-para">Sign Up</p>
+      </button>
+      <div style="margin-top: 20px"></div>
+      <a href="../signIn/index.html" class="bottom">Already have an account? Login</a>
+    </div>
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+      import { getDatabase, set, ref } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyA6MM48ydT8AA9rBFXOIe3ZKLlNR2Qfyqg",
+        authDomain: "new-project-b9bc7.firebaseapp.com",
+        projectId: "new-project-b9bc7",
+        storageBucket: "new-project-b9bc7.appspot.com",
+        messagingSenderId: "812785728456",
+        appId: "1:812785728456:web:48d597eeaec16326fc5efd",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const auth = getAuth();
+
+      signup.addEventListener("click", (e) => {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const username = document.getElementById("user").value;
+        const contact = document.getElementById("user").value;
+        
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+
+            set(ref(database, 'users/'+ user.uid),{
+              username: username,
+              email: email
+            })
+            // ...
+            window.location.href="../user interface/home/index.html";
+            
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorMessage);
+            // ..
+          });
+      });
+    </script>
+  </body>
+</html>
